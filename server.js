@@ -62,6 +62,6 @@ app.use('/api/generate', aiRouter);
 
 // ---------- START SERVER ----------
 app.listen(port, () => {
-  console.log(`Listening on http://127.0.0.1:${port}/`);
+  console.log(`Server running on port ${port}`);
 });
 
