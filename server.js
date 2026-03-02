@@ -20,7 +20,7 @@ const apiRouter = require('./routes/api');
 const aiRouter = require('./routes/generate');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // message banner
 const message = 
