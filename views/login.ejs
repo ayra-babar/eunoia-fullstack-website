@@ -1,0 +1,96 @@
+<!--
+  login.ejs
+  10/29/2025
+  Ayra Babar
+  Kyle Revelo
+  Khalil Velasco
+-->
+
+<section id="hero">
+  <img src="/images/signup-login.jpg" alt="minimalist image of vases" id="background-image">
+  <div class="auth-overlay">
+
+    <div class="auth__col">
+      <h1 class="auth__title">sign up</h1>
+      <form class="form" id="signup-form" method="POST" action="/signup">
+        <label>first name</label>
+        <input type="text" name="firstName" placeholder="enter first name" required>
+
+        <label>last name</label>
+        <input type="text" name="lastName" placeholder="enter last name" required>
+
+        <label>username</label>
+        <input type="text" name="username" placeholder="create a username" required>
+
+        <label>email address</label>
+        <input type="email" name="email" placeholder="enter your email" required>
+
+        <label>create a password</label>
+        <div class="pw-field">
+          <input id="signup-password" type="password" name="password" placeholder="************" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" data-target="signup-password" aria-controls="signup-password" aria-pressed="false" aria-label="Show password">show</button>
+        </div>
+
+        <label>confirm password</label>
+        <div class="pw-field">
+          <input id="signup-confirm-password" type="password" name="confirmPassword" placeholder="************" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" data-target="signup-confirm-password" aria-controls="signup-confirm-password" aria-pressed="false" aria-label="Show password">show</button>
+        </div>
+
+        <button type="submit">sign up</button>
+      </form>
+    </div>
+
+    <div class="auth__col">
+      <h1 class="auth__title">login</h1>
+      <form class="form" id="login-form" method="POST" action="/login">
+        <label>username</label>
+        <input type="text" name="username" placeholder="enter your username" required>
+
+        <label>enter your password</label>
+        <div class="pw-field">
+          <input id="login-password" type="password" name="password" placeholder="************" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" data-target="login-password" aria-controls="login-password" aria-pressed="false" aria-label="Show password">show</button>
+        </div>
+
+        <button type="submit">login</button>
+      </form>
+
+      <!-- message for those trying to access protected pages -->
+      <div id="message">
+        <h3>please sign up or login to access all website pages</h3>
+      </div>
+      <div id="form-message-display" class="error-message" style="display:none;"></div>
+    </div>
+  </div>
+</section>
+
+<section style="display: flex; justify-content: center; margin: 50px;">
+  <img src="/images/bow.png" alt="">
+</section>
+
+<!-- Tiny script: put this near the end of the page or in your bundle -->
+<script>
+  (function () {
+    const toggles = document.querySelectorAll('.pw-toggle');
+    toggles.forEach(btn => {
+      const input = document.getElementById(btn.dataset.target);
+      if (!input) return;
+      btn.addEventListener('click', () => {
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        btn.textContent = showing ? 'show' : 'hide';
+        btn.setAttribute('aria-pressed', String(!showing));
+        btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        input.focus({ preventScroll: true });
+      });
+    });
+  })();
+</script>
+
+<style>
+  /* optional minimal styling; tweak or remove if you have your own CSS */
+  .pw-field { display: flex; align-items: center; gap: .5rem; }
+  .pw-toggle { border: none; background: transparent; cursor: pointer; font: inherit; text-decoration: underline; }
+  .pw-toggle:focus { outline: 2px solid #aaa; outline-offset: 2px; }
+</style>

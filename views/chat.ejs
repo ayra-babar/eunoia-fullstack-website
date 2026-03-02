@@ -1,0 +1,192 @@
+<!--
+  chat.ejs
+  10/29/2025
+  Ayra Babar
+  Kyle Revelo
+  Khalil Velasco
+-->
+
+<div id="protected-content">
+  <section id="hero">
+    <img src="/images/Ocean.webp" alt="minimalist image of vases" id="background-image">
+
+    <div class="auth-overlay">
+      <div class="auth__col">
+        <h1 class="auth__title">share an idea</h1>
+        <form class="form">
+          <label>your idea</label>
+          <textarea rows="6" placeholder="write your idea here..."></textarea>
+
+          <label>note (optional)</label>
+          <input type="text" placeholder="add a tag or short note">
+
+          
+          <button disabled title="coming soon">send (coming soon)</button>
+        </form>
+      </div>
+
+      <div class="auth__col">
+        <h1 class="auth__title">thoughts & images</h1>
+
+        <div
+          style="
+            border: 2px dashed #d9d2c9;
+            border-radius: 12px;
+            padding: 16px;
+            background: #fffdfa;
+            color: #6b645d;
+          "
+          aria-disabled="true"
+        >
+         
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+            "
+          >
+            <div style="height: 90px; border: 1px dashed #e6ded4; border-radius: 10px; background: linear-gradient(180deg,#fff,#f9f6f1);"></div>
+            <div style="height: 90px; border: 1px dashed #e6ded4; border-radius: 10px; background: linear-gradient(180deg,#fff,#f9f6f1);"></div>
+            <div style="grid-column: 1 / -1; height: 120px; border: 1px dashed #e6ded4; border-radius: 10px; background: linear-gradient(180deg,#fff,#f9f6f1);"></div>
+            <div style="height: 90px; border: 1px dashed #e6ded4; border-radius: 10px; background: linear-gradient(180deg,#fff,#f9f6f1);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; justify-content: center; margin: 50px;">
+    <img src="/images/bow.png" alt="bow graphic">
+  </section>
+</div>
+</div>
+
+<script>
+  (function () {
+    const form = document.querySelector(".form");
+    const textarea = form.querySelector("textarea");
+    const noteInput = form.querySelector('input[type="text"]');
+    const grid = document.querySelector('#protected-content .auth__col:nth-child(2) [style*="grid"]');
+
+    // Turn the “coming soon” button into a live submit
+    const btn = form.querySelector("button");
+    btn.removeAttribute("disabled");
+    btn.removeAttribute("title");
+    btn.textContent = "send";
+
+    async function generateImages(idea, note) {
+      const r = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea, note })
+      });
+      if (!r.ok) throw new Error("request failed");
+      return r.json();
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const idea = textarea.value.trim();
+      const note = noteInput.value.trim();
+      if (!idea) return;
+
+      btn.disabled = true; btn.textContent = "generating…";
+
+      // simple loading placeholders
+      grid.innerHTML = '<div style="grid-column:1/-1;height:4px;background:#eee;border-radius:2px;overflow:hidden;"><div style="height:100%;width:35%;background:#ddd;animation:pulse 1s infinite alternate"></div></div>';
+      if (!document.querySelector('#pulse-style')) {
+        const s = document.createElement('style'); s.id = 'pulse-style';
+        s.textContent = '@keyframes pulse{from{opacity:.5}to{opacity:1}}'; document.head.appendChild(s);
+      }
+
+      try {
+        const { images } = await generateImages(idea, note);
+        if (!images?.length) throw new Error("no images");
+
+grid.innerHTML = images.map((url) => `
+  <div class="image-card">
+    <img src="${url}" alt="" class="image-card__img">
+    <button
+      type="button"
+      class="image-card__btn"
+      data-image-url="${url}"
+    >
+      send to gallery
+    </button>
+  </div>
+`).join("");
+
+// attach click handlers
+grid.querySelectorAll('.image-card__btn').forEach((button) => {
+  button.addEventListener('click', () => {
+    const imageUrl = button.dataset.imageUrl;
+    console.log('[chat] send to gallery clicked, url:', imageUrl);
+
+    // Save the URL so the gallery page can use it
+    localStorage.setItem('pendingImageUrl', imageUrl);
+
+    // Add a hash so gallery knows we came from chat wanting a new entry
+    window.location.href = '/gallery#new-entry';
+  });
+});
+
+
+
+      } catch (err) {
+        grid.innerHTML = `<p style="color:#c00;margin:0">Could not generate images. Try a simpler idea.</p>`;
+        console.error(err);
+      } finally {
+        btn.disabled = false; btn.textContent = "send";
+      }
+    });
+  })();
+</script>
+
+<style>
+  .image-card {
+    position: relative;
+    border: 1px dashed #e6ded4;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .image-card__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-card__btn {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fffdfa;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+  }
+
+  .image-card:hover .image-card__btn {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -2px);
+  }
+
+  .image-card__btn:focus-visible {
+    outline: 2px solid #fffdfa;
+    outline-offset: 2px;
+  }
+</style>
+

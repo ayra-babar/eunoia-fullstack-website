@@ -1,0 +1,76 @@
+<!--
+  gallery.ejs
+  10/29/2025
+  Ayra Babar
+  Kyle Revelo
+  Khalil Velasco
+-->
+
+<div id="protected-content">
+    <h1 style="text-align: center; margin-bottom: 50px">your gallery</h1>
+
+    <div id="gallery-page">
+        <img src="/images/gingham.png" alt="gallery gingham background">
+
+    <div id="gallery-overlay">
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- where entries will show -->
+        </div>
+
+      <!-- hidden popup for new entry -->
+        <div id="entry" class="entry hidden">
+            <div class="entry-content">
+                <form id="entry-form">
+
+                    <div class="entry-header">
+                        <h2>new journal entry</h2>
+                        <img src="/images/bow copy.png">
+                     </div>
+
+                    <label>
+                        title<br>
+                        <input type="text" name="title" required style="margin-top: 12px">
+                    </label><br>
+
+                    <label>
+                        your thoughts<br>
+                        <textarea name="bodyText" rows="6" cols="25" required style="margin-top: 12px"></textarea>
+                    </label><br>
+
+                    <label> 
+                        image (optional)
+                        <input type="url" name="imageUrl" placeholder="https://photo.com/image.jpg">
+                    </label><br>
+
+                    <label><br>
+
+                        location (optional)
+                        <input type="text" name="location" style="margin-left: 10px">
+                    </label><br>
+
+                    <label>
+                        date (optional)
+                        <input type="date" name="entryDate" style="margin-left: 10px">
+                    </label><br>
+
+                    <div class="entry-button">
+                        <button type="submit" class="submit-button">save entry</button>
+                        <button type="button" id="entry-cancel" class="submit-button">cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3) floating button to open the popup -->
+        <button id="gallery-button">
+            <img src="/images/gallery-button.png" alt="add new gallery entry">
+            <span class="tooltip">click to add a new journal entry</span>
+        </button>
+        </div>
+    </div>
+
+    <div>
+        <img src="/images/bow.png"
+            style="display: block; margin: auto; margin-top: 40px; margin-bottom: 40px">
+    </div>
+</div>

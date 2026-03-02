@@ -1,0 +1,460 @@
+<!--
+  profile.ejs
+  10/29/2025
+  Ayra Babar
+  Kyle Revelo
+  Khalil Velasco
+-->
+
+<div id="protected-content">
+  <section id="profile" class="profile">
+    <!-- left column -->
+    <div class="profile__main">
+      <h1 class="profile__name" id="profileName">username</h1>
+
+      <p class="profile__bio">
+        <span>user biography</span>
+        <span id="profileBioText">you haven't written a bio yet.</span>
+      </p>
+
+      <h2 class="profile__header">profile details</h2>
+
+      <button class="btn" type="button" id="editProfileBtn">edit profile</button>
+
+      <form class="profile__form" id="profileForm">
+        <label class="field">
+          <span>first name</span>
+          <input
+            type="text"
+            name="firstName"
+            placeholder="first name here"
+            disabled
+          />
+        </label>
+
+        <label class="field">
+          <span>last name</span>
+          <input
+            type="text"
+            name="lastName"
+            placeholder="last name here"
+            disabled
+          />
+        </label>
+
+        <label class="field field--wide">
+          <span>email address</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="your email address"
+            disabled
+          />
+        </label>
+
+        <label class="field">
+          <span>username</span>
+          <input
+            type="text"
+            name="username"
+            placeholder="your username here"
+            disabled
+          />
+        </label>
+
+        <label class="field">
+          <span>password</span>
+          <input type="password" name="password" value="********" />
+        </label>
+
+        <label class="field field--wide">
+          <span>bio</span>
+          <input
+            type="text"
+            name="bio"
+            placeholder="tell us about yourself"
+            disabled
+          />
+        </label>
+
+        <button class="btn" type="submit" id="saveProfileBtn" disabled>save</button>
+      </form>
+
+      <!-- SETTINGS SECTION -->
+      <h2 class="profile__header">settings</h2>
+
+      <form class="profile__form profile__form--settings" id="themeForm">
+        <label class="field field--wide">
+          <span>interface theme</span>
+          <select name="theme" id="themeSelect">
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
+
+        <button class="btn" type="submit">save theme</button>
+      </form>
+
+      <div class="profile__sig">· ✎ ·</div>
+    </div>
+
+    <!-- right column with profile picture -->
+    <aside class="profile__aside">
+      <form
+        id="pictureForm"
+        enctype="multipart/form-data"
+        style="display: block;"
+      >
+        <figure class="portrait">
+          <img src="/images/profiledesign.png" alt="" class="portrait-bg" />
+
+          <!-- profile picture placeholder -->
+          <img
+            id="profilePic"
+            src="/images/blank-avatar.png"
+            alt="profile portrait"
+            class="portrait-img"
+          />
+
+          <!-- hidden file input -->
+          <input
+            type="file"
+            name="profilePic"
+            id="uploadInput"
+            accept="image/*"
+            class="upload-input"
+          />
+
+          <!-- buttons container -->
+          <div class="portrait-buttons">
+            <label for="uploadInput" class="upload-btn">upload photo</label>
+            <button type="submit" class="btn save-photo-btn">save photo</button>
+          </div>
+        </figure>
+      </form>
+
+      <section>
+        <img
+          src="/images/bow.png"
+          style="display: flex; justify-content: center; margin: 70px; margin-top: 80px"
+        />
+        <button class="btn" type="button" id="logOut" onclick="logOut()">log out</button>
+        <button class="btn" type="button" id="delete" onclick="deleteAccount()">delete account</button>
+      </section>
+    </aside>
+  </section>
+
+  <br /><br />
+
+  <!-- ===== YOUR BEAUTIFUL THOUGHTS SECTION ===== -->
+  <section id="thoughts" class="thoughts">
+    <header class="thoughts__header">
+      <h2 class="thoughts__title">your beautiful thoughts</h2>
+    </header>
+
+    <!-- placeholder for future posts -->
+    <!-- placeholder for future posts -->
+    <div id="thoughtsGrid" class="thoughts__grid thoughts__grid--empty">
+      <p class="placeholder-text">
+        nothing here yet — your beautiful thoughts will appear soon.
+      </p>
+    </div>
+  </section>
+
+  <section style="display: flex; justify-content: center; margin: 50px;">
+    <img src="/images/bow.png" />
+  </section>
+
+  <script>
+  // 1. Require token & load current user
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') {
+      // not logged in -> send back to login
+      window.location.href = '/login';
+      return;
+    }
+
+    // Load current user data into the form
+    try {
+      const res = await fetch('/api/me', {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        console.error('error loading profile:', data);
+        return;
+      }
+
+      const user = data.user;
+
+      // fill top display
+      const nameHeading = document.querySelector('.profile__name');
+      const bioText = document.querySelector('.profile__bio');
+      const bioSpan = bioText.querySelector('span');
+      if (nameHeading) nameHeading.textContent = user.username || 'your username';
+
+      if (bioSpan && user.bio) {
+        bioSpan.textContent = 'user biography';
+        bioSpan.insertAdjacentText('afterend', '\n');
+        bioText.lastChild && (bioText.lastChild.textContent = user.bio);
+      }
+
+      // fill the form fields
+      const form = document.getElementById('profileForm');
+      if (form) {
+        form.firstName.value = user.first_name || '';
+        form.lastName.value  = user.last_name || '';
+        form.email.value     = user.email || '';
+        form.username.value  = user.username || '';
+        form.bio.value       = user.bio || '';
+      }
+
+      // theme select
+      const themeSelect = document.getElementById('themeSelect');
+      if (themeSelect && user.theme_preference) {
+        themeSelect.value = user.theme_preference;
+        document.documentElement.setAttribute('data-theme', user.theme_preference);
+      }
+
+      // profile image
+      const imgEl = document.getElementById('profilePic');
+      if (imgEl && user.profile_image_url) {
+        imgEl.src = user.profile_image_url;
+      }
+
+    } catch (err) {
+      console.error('error loading /api/me', err);
+    }
+  });
+
+  // 2. Edit/cancel toggle
+  const editBtn = document.getElementById('editProfileBtn');
+  const form = document.getElementById('profileForm');
+  const saveBtn = document.getElementById('saveProfileBtn');
+
+  let editing = false;
+
+  // toggle edit/cancel
+  editBtn.addEventListener('click', () => {
+    editing = !editing;
+
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach((input) => {
+      // If you want to keep username/email locked, uncomment this:
+      // if (input.name === 'username' || input.name === 'email') return;
+      input.disabled = !editing;
+    });
+
+    saveBtn.disabled = !editing;
+    editBtn.textContent = editing ? 'cancel' : 'edit profile';
+  });
+
+  // handle save via fetch + JWT header
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('you must be logged in to update your profile.');
+      return;
+    }
+
+    const formData = new FormData(form);
+    const payload = {
+      firstName: formData.get('firstName'),
+      lastName:  formData.get('lastName'),
+      username:  formData.get('username'),
+      email:     formData.get('email'),
+      bio:       formData.get('bio'),
+    };
+
+    try {
+      const res = await fetch('/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        alert(data.message || 'error updating profile');
+        return;
+      }
+
+      // success: lock fields again + reload so EJS text (like bio) updates
+      editing = false;
+      form.querySelectorAll('input').forEach((input) => {
+        input.disabled = true;
+      });
+      saveBtn.disabled = true;
+      editBtn.textContent = 'edit profile';
+
+      window.location.reload();
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('error updating profile');
+    }
+  });
+
+  // 3. Save profile via /api/profile
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('profileForm');
+    const saveBtn = document.getElementById('saveProfileBtn');
+    const editBtn = document.getElementById('editProfileBtn');
+
+    if (!form || !saveBtn || !editBtn) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();   // <-- stops normal form submit (no more blank JSON page)
+
+      const token = localStorage.getItem('token');
+      if (!token || token === 'null' || token === 'undefined') {
+        alert('please log in again');
+        return;
+      }
+
+      const formData = new FormData(form);
+      const firstName = formData.get('firstName');
+      const lastName  = formData.get('lastName');
+      const email     = formData.get('email');
+      const username  = formData.get('username');
+      const bio       = formData.get('bio');
+
+      try {
+        const res = await fetch('/api/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({ firstName, lastName, email, username, bio }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          alert(data.message || 'error updating profile');
+          return;
+        }
+
+        // turn editing off
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach((input) => {
+          if (input.name === 'password') return;
+          input.disabled = true;
+        });
+
+        saveBtn.disabled = true;
+        editBtn.textContent = 'edit profile';
+        alert('profile updated!');
+      } catch (err) {
+        console.error('error updating profile:', err);
+        alert('something went wrong updating your profile.');
+      }
+    });
+  });
+
+  // 4. Save theme via /api/profile/theme
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeForm = document.getElementById('themeForm');
+    const themeSelect = document.getElementById('themeSelect');
+    if (!themeForm || !themeSelect) return;
+
+    themeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const token = localStorage.getItem('token');
+      if (!token || token === 'null' || token === 'undefined') {
+        alert('please log in again');
+        return;
+      }
+
+      const theme = themeSelect.value;
+
+      try {
+        const res = await fetch('/api/profile/theme', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+          body: JSON.stringify({ theme }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          alert(data.message || 'error saving theme');
+          return;
+        }
+
+        document.documentElement.setAttribute('data-theme', theme);
+        alert('theme saved!');
+      } catch (err) {
+        console.error('error saving theme:', err);
+        alert('something went wrong saving your theme.');
+      }
+    });
+  });
+
+  // 5. Save profile picture via /api/profile/picture
+  document.addEventListener('DOMContentLoaded', () => {
+    const picForm = document.getElementById('pictureForm');
+    const uploadInput = document.getElementById('uploadInput');
+    const imgEl = document.getElementById('profilePic');
+
+    if (!picForm || !uploadInput || !imgEl) return;
+
+    picForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const token = localStorage.getItem('token');
+      if (!token || token === 'null' || token === 'undefined') {
+        alert('please log in again');
+        return;
+      }
+
+      if (!uploadInput.files || !uploadInput.files[0]) {
+        alert('please choose a photo first');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('profilePic', uploadInput.files[0]);
+
+      try {
+        const res = await fetch('/api/profile/picture', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+          },
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          alert(data.message || 'error saving photo');
+          return;
+        }
+
+        // update image & bust cache
+        if (data.imageUrl) {
+          imgEl.src = data.imageUrl + '?t=' + Date.now();
+        }
+
+        alert('photo saved!');
+      } catch (err) {
+        console.error('error saving profile picture:', err);
+        alert('something went wrong saving your photo.');
+      }
+    });
+  });
+</script>
+</div>

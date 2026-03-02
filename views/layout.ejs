@@ -1,0 +1,75 @@
+<!--
+  layout.ejs
+  10/29/2025
+  Ayra Babar
+  Kyle Revelo
+  Khalil Velasco
+-->
+
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= (typeof user !== 'undefined' && user.theme_preference) ? user.theme_preference : 'light' %>">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <div id="title-section">
+          <img src="/images/favicon.png" alt="eunoia flower logo" style="width: 50px;">
+          <a href="/" class="navigation">eunoia</a>
+        </div>
+        <a href="/" class="navigation">home</a>
+        <a href="/gallery" class="navigation">gallery</a>
+        <a href="/contact" class="navigation">contact</a>
+        <a href="/chat" class="navigation">chatgpt</a>
+        <a href="/login" class="navigation">sign up / login </a>
+        <a href="/profile" class="navigation">profile</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- each page’s unique content goes here -->
+      <body class="<%= title && (title.includes('home page') || title.includes('login & sign up')) || title.includes('chat') ? 'home-page' : '' %>">
+      <%- body %>
+
+    </main>
+
+    <footer>
+      <div class="grid-container">
+
+        <section id="section-one">
+          <img src="/images/favicon.png" alt="eunoia flower logo" style="width: 50px;">
+          <h2>eunoia</h2>
+        </section>
+
+        <section id="section-two">
+          <p style="font-weight: bold;">get started today. use the sign up link below to start journaling!</p>
+          <a href="/login" class="gray-link">sign up</a>
+        </section>
+
+        <section id="section-three">
+          <p style="font-weight: bold;">connect with us</p>
+          <p class="gray-text">click the link below to send us a message!</p>
+          <a href="/contact" class="gray-link">contact us</a>
+        </section>
+
+        <section id="section-four">
+          <p style="font-weight: bold;">location</p>
+          <p style="color: #454545">1600 Holloway Ave</p>
+          <p style="color: #454545;">San Francisco, CA 94132</p>
+        </section>
+      </div> 
+    </footer>
+
+    <script src="/script.js" defer></script>
+    
+  </body>
+</html>
