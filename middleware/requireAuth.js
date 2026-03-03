@@ -1,11 +1,3 @@
-/**
-  middleware/requireAuth.js
-  12/09/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
 const jwt = require('jsonwebtoken');
 
 /**
