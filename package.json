@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js"
   },
-  "url": "git+https://github.com/ayra-babar/eunoia-fullstack-website.git"
+  "url": "git+https://github.com/ayra-babar/eunoia-fullstack-website.git",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
