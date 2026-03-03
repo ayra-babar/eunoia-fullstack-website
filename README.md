@@ -1,5 +1,9 @@
 # Eunoia – Full-Stack Journal & Gallery Web Application
 
+## Live Demo
+
+https://eunoia-fullstack-website.onrender.com
+
 Eunoia is a full-stack web application that allows users to create accounts, manage personal profiles, and create journal entries with optional images and location data. The application includes secure authentication, dynamic server-side rendering, and AI-powered image generation. This project demonstrates full-stack development principles including authentication, relational database design, middleware architecture, and RESTful API implementation.
 
 Built with Node.js, Express, PostgreSQL, and EJS.
