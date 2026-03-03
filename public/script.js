@@ -1,11 +1,3 @@
-/**
- * script.js
- * 10/29/2025
- * Ayra Babar
- * Kyle Revelo
- * Khalil Velasco
- */
-
 let editingEntryId = null;
 
 /* =========================================
