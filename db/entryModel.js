@@ -1,12 +1,4 @@
 /**
-  db/entryModel.js
-  12/03/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
-/**
  * createEntry(pool, userId, title, bodyText, imageUrl, location, entryDate)
  * inserts a new journal entry for a specific user
  *
