@@ -1,11 +1,3 @@
-/**
-  routes/auth.js
-  11/17/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
 const express = require('express');
 const { createUser, loginUser, invalidUsername, findUserByUsername } = require('../db/userModel');
 const jwt = require('jsonwebtoken');
