@@ -1,11 +1,3 @@
-/**
-  routes/api.js
-  11/18/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
 const express = require('express');
 const router = express.Router();
 const path = require('path');
