@@ -1,11 +1,3 @@
-/**
-  db/userModel.js
-  11/17/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
 const bcrypt = require('bcrypt');
 
 /**
