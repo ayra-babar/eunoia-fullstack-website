@@ -1,11 +1,3 @@
-/**
-  generate.js
-  11/18/2025
-  Ayra Babar
-  Kyle Revelo
-  Khalil Velasco
-*/
-
 const express = require('express');
 const OpenAI = require('openai');
 
